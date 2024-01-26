@@ -1,0 +1,98 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Program Files\\vs project\\MiniPCBot\\MinipcBot.csproj": {}
+  },
+  "projects": {
+    "D:\\Program Files\\vs project\\MiniPCBot\\MinipcBot.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Program Files\\vs project\\MiniPCBot\\MinipcBot.csproj",
+        "projectName": "MinipcBot",
+        "projectPath": "D:\\Program Files\\vs project\\MiniPCBot\\MinipcBot.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\Program Files\\vs project\\MiniPCBot\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "D:\\Program Files\\VS com\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "DSharpPlus": {
+              "target": "Package",
+              "version": "[4.4.6, )"
+            },
+            "DSharpPlus.CommandsNext": {
+              "target": "Package",
+              "version": "[4.4.6, )"
+            },
+            "DSharpPlus.Interactivity": {
+              "target": "Package",
+              "version": "[4.4.6, )"
+            },
+            "DSharpPlus.Lavalink": {
+              "target": "Package",
+              "version": "[4.4.6, )"
+            },
+            "DSharpPlus.Rest": {
+              "target": "Package",
+              "version": "[4.4.6, )"
+            },
+            "DSharpPlus.SlashCommands": {
+              "target": "Package",
+              "version": "[4.4.6, )"
+            },
+            "DSharpPlus.VoiceNext": {
+              "target": "Package",
+              "version": "[4.4.6, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
