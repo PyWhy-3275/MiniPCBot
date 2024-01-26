@@ -18,7 +18,7 @@ namespace MinipcBot
         {
             var discord = new DiscordClient(new DiscordConfiguration()
             {
-                Token = "MTIwMDA1MjgxOTA4MDc5NDE5Mg.GXy4FK.QuKb_jvOS9VyeikocCHeTHeKXni5w8m_cIcf5M",
+                Token = "",
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents,
                 MinimumLogLevel = LogLevel.Debug
