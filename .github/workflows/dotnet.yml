@@ -1,0 +1,40 @@
+name: .NET Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        architecture: [x64, x86, arm64]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 4.8.1
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --runtime ${{ matrix.os }}-${{ matrix.architecture }}
+
+    - name: Publish artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: built-artifacts
+        path: bin/Release
