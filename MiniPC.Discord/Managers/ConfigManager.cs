@@ -3,7 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using Newtonsoft.Json;
-using MiniPC.Discord.Helpers;
+
+using Log = Serilog.Log;
 
 namespace MiniPC.Discord.Managers
 {
@@ -34,7 +35,7 @@ namespace MiniPC.Discord.Managers
             var configDirectory = directoryInfo.Parent!.FullName + "\\Config";
 
             if (!Directory.Exists(configDirectory)) return;
-            Log.Info("Opening Explorer with config!");
+            Log.Information("Opening Explorer with config!");
             var startInfo = new ProcessStartInfo
             {
                 Arguments = configDirectory,

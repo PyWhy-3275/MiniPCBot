@@ -63,15 +63,14 @@ public class HelpFormatter : BaseHelpFormatter
     {
         EmbedBuilder.WithDescription("You can get more specific help by also supplying the name of a command.");
 
-        Dictionary<string, List<Command>> CategorizedCommands = new Dictionary<string, List<Command>>
-        {
-            // By pre-seeding we can control order
-            { "Tipping", new List<Command>() },
-            { "Exchange", new List<Command>() },
-            { "Dallar", new List<Command>() },
-            { "Jokes", new List<Command>() },
-            { "Misc", new List<Command>() }
-        };
+        var categorizedCommands = new Dictionary<string, List<Command>>();
+        if (categorizedCommands == null) throw new ArgumentNullException(nameof(categorizedCommands));
+        // By pre-seeding we can control order
+        categorizedCommands.Add("Tipping", new List<Command>());
+        categorizedCommands.Add("Exchange", new List<Command>());
+        categorizedCommands.Add("Dallar", new List<Command>());
+        categorizedCommands.Add("Jokes", new List<Command>());
+        categorizedCommands.Add("Misc", new List<Command>());
 
         foreach (Command command in subcommands)
         {
@@ -80,25 +79,20 @@ public class HelpFormatter : BaseHelpFormatter
                 continue;
             }
 
-            string Category =
-                ((HelpCategoryAttribute)command.CustomAttributes.FirstOrDefault(a => a is HelpCategoryAttribute))
-                ?.GetCategory();
-            if (Category == null)
-            {
-                Category = "Uncategorized";
-            }
+            var category = ((HelpCategoryAttribute)command.CustomAttributes.FirstOrDefault(a => a is HelpCategoryAttribute))
+                ?.GetCategory() ?? "Uncategorized";
 
-            if (CategorizedCommands.ContainsKey(Category))
+            if (categorizedCommands.ContainsKey(category))
             {
-                CategorizedCommands[Category].Add(command);
+                categorizedCommands[category].Add(command);
             }
             else
             {
-                CategorizedCommands[Category] = new List<Command>(new Command[] { command });
+                categorizedCommands[category] = new List<Command>(new Command[] { command });
             }
         }
 
-        foreach (var Category in CategorizedCommands)
+        foreach (var Category in categorizedCommands)
         {
             if (Category.Value.Count == 0)
             {

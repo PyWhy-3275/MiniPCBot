@@ -1,39 +1,51 @@
 ﻿using System;
-using System.Threading.Tasks;
+using Serilog;
 using DSharpPlus;
-using DSharpPlus.CommandsNext;
+using DSharpPlus.Net;
 using DSharpPlus.Entities;
 using DSharpPlus.Lavalink;
-using DSharpPlus.Net;
+using System.Threading.Tasks;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.SlashCommands;
-using MiniPC.Discord.Commands;
+using Microsoft.Extensions.Logging;
+
 using MiniPC.Discord.Helpers;
 using MiniPC.Discord.Managers;
+using MiniPC.Discord.Commands;
+
+using Log = Serilog.Log;
 
 namespace MiniPC.Discord
 {
     internal class MiniBot
     {
         public static DiscordClient Client { get; private set; }
-        
-        public CommandsNextExtension Commands { get; private set; }
+
+        private CommandsNextExtension Commands { get; set; }
         private SlashCommandsExtension _slashCommands;
-        
-        public static CommandContext commandContext;
-        
+
         public DiscordActivity Activity { get; private set; }
         
-        private string[] words = { "jeb", "debil", "idiot", "kurw" }; //ToDo: from json
+        private string[] _words = { "jeb", "debil", "idiot", "kurw" }; //ToDo: from json
 
-        private string[] responses = { "No nieźle", "Fajnie", "nie bluźnij", "Chyba ty", "Nie obrażaj, kolego" };
+        private string[] _responses = { "No nieźle", "Fajnie", "nie bluźnij", "Chyba ty", "Nie obrażaj, kolego" };
         
         public MiniBot()
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .CreateLogger();
+
+            var logFactory = new LoggerFactory().AddSerilog();
+            
             Client = new DiscordClient(new DiscordConfiguration()
             {
-                Token = ConfigManager.Token,
+                AutoReconnect = true,
                 TokenType = TokenType.Bot,
-                Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents
+                LoggerFactory = logFactory,
+                Token = ConfigManager.Token,
+                Intents = DiscordIntents.All,
+                MinimumLogLevel = LogLevel.Debug,
             });
 
             this.Commands = Client.UseCommandsNext(new CommandsNextConfiguration()
@@ -45,6 +57,7 @@ namespace MiniPC.Discord
             Commands.SetHelpFormatter<HelpFormatter>();
             //Commands.RegisterCommands<MusicCommands>();
             Commands.RegisterCommands<AnimeCommands>();
+            Commands.RegisterCommands<AdminCommands>();
             
             _slashCommands = Client.UseSlashCommands();
         }
@@ -53,13 +66,13 @@ namespace MiniPC.Discord
         {
             Client.MessageCreated += async (s, e) =>
             {
-                var rnd = new Random().Next(responses.Length);
+                var rnd = new Random().Next(_responses.Length);
 
-                foreach (var item in words)
+                foreach (var item in _words)
                 {
                     if (e.Message.Content.ToLower().Contains(item)) //e.Message.Content.ToLower().StartsWith(item)
                     {
-                        await e.Message.RespondAsync(responses[rnd]).ConfigureAwait(false);
+                        await e.Message.RespondAsync(_responses[rnd]).ConfigureAwait(false);
                     }
                 }
             };
@@ -83,7 +96,7 @@ namespace MiniPC.Discord
             
             Client.Ready += async (s, e) =>
             {
-                Log.Info("BOT IS READY");
+                Log.Information("BOT IS READY");
                 await s.UpdateStatusAsync(Activity);
                 //await lavalink.ConnectAsync(lavalinkConfig);
                 await EventManager.HandleEventsAsync();

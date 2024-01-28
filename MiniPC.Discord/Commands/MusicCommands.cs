@@ -42,7 +42,7 @@ namespace MiniPC.Discord.Commands
         [Cost(1.0f)]
         public async Task Play(CommandContext ctx, [RemainingText] string search)
         {
-            if (ctx.Member.VoiceState == null || ctx.Member.VoiceState.Channel == null)
+            if (ctx.Member!.VoiceState == null || ctx.Member.VoiceState.Channel == null)
             {
                 await ctx.RespondAsync("You are not in a voice channel.");
                 return;
