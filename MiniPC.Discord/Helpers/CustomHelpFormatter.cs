@@ -24,9 +24,9 @@ public class HelpFormatter : BaseHelpFormatter
 
         EmbedBuilder.WithTitle("Help");
         EmbedBuilder.WithColor(DiscordColor.Blue);
-        EmbedBuilder.WithAuthor(ctx.Client.CurrentUser.Username, "https://minipc.pw",
+        EmbedBuilder.WithAuthor(ctx.Client.CurrentUser.Username, "https://bot.minipc.pw",
             ctx.Client.CurrentUser.GetAvatarUrl(ImageFormat.Png, 64));
-        EmbedBuilder.WithFooter("MiniPC.pw", ctx.Client.CurrentUser.GetAvatarUrl(ImageFormat.Png, 64));
+        EmbedBuilder.WithFooter("Bot.MiniPC.pw", ctx.Client.CurrentUser.GetAvatarUrl(ImageFormat.Png, 64));
         EmbedBuilder.WithTimestamp(DateTime.Now);
     }
 
@@ -38,7 +38,7 @@ public class HelpFormatter : BaseHelpFormatter
 
         if (Cost.GetValueOrDefault() != 0.0f)
         {
-            EmbedBuilder.AddField("Cost", $"{Cost.GetValueOrDefault()} Dallar");
+            EmbedBuilder.AddField("Cost", $"{Cost.GetValueOrDefault()} MiniPC");
         }
 
         EmbedBuilder.AddField("Description", command.Description);
@@ -63,14 +63,14 @@ public class HelpFormatter : BaseHelpFormatter
     {
         EmbedBuilder.WithDescription("You can get more specific help by also supplying the name of a command.");
 
-        var categorizedCommands = new Dictionary<string, List<Command>>();
-        if (categorizedCommands == null) throw new ArgumentNullException(nameof(categorizedCommands));
-        // By pre-seeding we can control order
-        categorizedCommands.Add("Tipping", new List<Command>());
-        categorizedCommands.Add("Exchange", new List<Command>());
-        categorizedCommands.Add("Dallar", new List<Command>());
-        categorizedCommands.Add("Jokes", new List<Command>());
-        categorizedCommands.Add("Misc", new List<Command>());
+        Dictionary<string, List<Command>> CategorizedCommands = new Dictionary<string, List<Command>>
+        {
+            { "Tipping", new List<Command>() },
+            { "Exchange", new List<Command>() },
+            { "Dallar", new List<Command>() },
+            { "Jokes", new List<Command>() },
+            { "Misc", new List<Command>() }
+        };
 
         foreach (Command command in subcommands)
         {
@@ -79,20 +79,25 @@ public class HelpFormatter : BaseHelpFormatter
                 continue;
             }
 
-            var category = ((HelpCategoryAttribute)command.CustomAttributes.FirstOrDefault(a => a is HelpCategoryAttribute))
-                ?.GetCategory() ?? "Uncategorized";
-
-            if (categorizedCommands.ContainsKey(category))
+            string Category =
+                ((HelpCategoryAttribute)command.CustomAttributes.FirstOrDefault(a => a is HelpCategoryAttribute))
+                ?.GetCategory();
+            if (Category == null)
             {
-                categorizedCommands[category].Add(command);
+                Category = "Uncategorized";
+            }
+
+            if (CategorizedCommands.ContainsKey(Category))
+            {
+                CategorizedCommands[Category].Add(command);
             }
             else
             {
-                categorizedCommands[category] = new List<Command>(new Command[] { command });
+                CategorizedCommands[Category] = new List<Command>(new Command[] { command });
             }
         }
 
-        foreach (var Category in categorizedCommands)
+        foreach (var Category in CategorizedCommands)
         {
             if (Category.Value.Count == 0)
             {

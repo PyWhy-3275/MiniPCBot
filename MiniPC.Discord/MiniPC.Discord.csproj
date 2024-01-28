@@ -45,7 +45,13 @@
         <Compile Include="Classes\HelpCategoryAttribute.cs" />
         <Compile Include="Commands\AdminCommands.cs" />
         <Compile Include="Commands\AnimeCommands.cs" />
+        <Compile Include="Commands\BotsCommands.cs" />
+        <Compile Include="Commands\Debug.cs" />
+        <Compile Include="Commands\GamesCommands.cs" />
+        <Compile Include="Commands\Guesstheanime.cs" />
+        <Compile Include="Commands\MisticCommands.cs" />
         <Compile Include="Commands\MusicCommands.cs" />
+        <Compile Include="Commands\TestCommands.cs" />
         <Compile Include="Helpers\CustomHelpFormatter.cs" />
         <Compile Include="Helpers\Emoji.cs" />
         <Compile Include="Managers\ConfigManager.cs" />

@@ -46,6 +46,7 @@ namespace MiniPC.Discord
                 Token = ConfigManager.Token,
                 Intents = DiscordIntents.All,
                 MinimumLogLevel = LogLevel.Debug,
+                LogTimestampFormat = "hh:mm:ss tt",
             });
 
             this.Commands = Client.UseCommandsNext(new CommandsNextConfiguration()
@@ -55,9 +56,14 @@ namespace MiniPC.Discord
             });
             
             Commands.SetHelpFormatter<HelpFormatter>();
-            //Commands.RegisterCommands<MusicCommands>();
+
+            Commands.RegisterCommands<Debug>();
+            Commands.RegisterCommands<BotCommands>();
+            Commands.RegisterCommands<TestCommands>();
             Commands.RegisterCommands<AnimeCommands>();
             Commands.RegisterCommands<AdminCommands>();
+            Commands.RegisterCommands<GamesCommands>();
+            Commands.RegisterCommands<MisticCommands>();
             
             _slashCommands = Client.UseSlashCommands();
         }

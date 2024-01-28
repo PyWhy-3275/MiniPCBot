@@ -11,7 +11,7 @@ public static class EventManager
         //MiniBot.Client.Ready += OnReady;
         MiniBot.Client.MessageCreated += OnMessageCreated;
         MiniBot.Client.MessageDeleted += OnMessageDeleted;
-        MiniBot.Client.UnknownEvent += OnUnknownEvent;
+        //MiniBot.Client.UnknownEvent += OnUnknownEvent;
         return Task.CompletedTask;
     }
     
@@ -39,7 +39,7 @@ public static class EventManager
     private static Task OnUnknownEvent(DSharpPlus.DiscordClient sender, DSharpPlus.EventArgs.UnknownEventArgs e)
     {
         Log.Warning($"Unknown event: {e.EventName}");
-        Log.Debug($"Payload: {e.Json}");
+        Log.Debug($"Payload: {e}");
         return Task.CompletedTask;
     }
 }
