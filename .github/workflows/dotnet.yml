@@ -23,14 +23,18 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Install .NET Framework 4.8
+      if: startsWith(matrix.os, 'windows')
       run: |
-        choco install dotnet4.8 --yes --no-progress
+        # Установите .NET Framework 4.8 вручную
 
     - name: Restore dependencies
       run: nuget restore
 
     - name: Build
+      if: startsWith(matrix.os, 'windows')
       run: msbuild /t:restore /p:Configuration=Release
+      if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
+      run: msbuild /t:restore /p:Configuration=Release /usr/share/dotnet/sdk/4.8.1/
 
     - name: Publish artifacts
       uses: actions/upload-artifact@v2
