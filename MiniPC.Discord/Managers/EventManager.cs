@@ -8,11 +8,16 @@ public static class EventManager
 {
     public static Task HandleEventsAsync()
     {
-        //MiniBot.Client.Ready += OnReady;
+        MiniBot.Client.Ready += OnReady;
         MiniBot.Client.MessageCreated += OnMessageCreated;
         MiniBot.Client.MessageDeleted += OnMessageDeleted;
         //MiniBot.Client.UnknownEvent += OnUnknownEvent;
         return Task.CompletedTask;
+    }
+
+    private async Task OnReady(DiscordClient sender, ReadyEventArgs e)
+    {
+        Console.WriteLine($"Bot {sender.CurrentUser.Username} is connected and ready!");
     }
     
     private static Task OnMessageCreated(DiscordClient sender, MessageCreateEventArgs e)
