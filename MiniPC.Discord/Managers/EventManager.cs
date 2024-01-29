@@ -15,11 +15,22 @@ public static class EventManager
         return Task.CompletedTask;
     }
     
-    private static Task OnMessageCreated(DSharpPlus.DiscordClient sender, DSharpPlus.EventArgs.MessageCreateEventArgs e)
+    private static Task OnMessageCreated(DiscordClient sender, MessageCreateEventArgs e)
     {
-        if (e.Author.IsBot) return Task.CompletedTask;
+        if (e.Author == null || e.Author.IsBot)
+            return Task.CompletedTask;
+    
         Log.Information($"Message: [{e.Author.Username}#{e.Author.Discriminator}] {e.Message.Content}");
-        Log.Debug($"(\nID: {e.Guild.Id}  Guild: {e.Guild.Name}");
+    
+        if (e.Guild != null)
+        {
+            Log.Debug($"(\nID: {e.Guild.Id}  Guild: {e.Guild.Name}");
+        }
+        else
+        {
+            Log.Debug("Guild information not available (DM message).");
+        }
+    
         return Task.CompletedTask;
     }
     
