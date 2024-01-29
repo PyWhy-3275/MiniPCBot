@@ -1,5 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniPC.Core", "MiniPC.Core\MiniPC.Core.csproj", "{F558A60D-0720-42BC-99F4-7D13CACA936E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniPC.Discord", "MiniPC.Discord\MiniPC.Discord.csproj", "{3C1A9CF7-152D-4DFD-82C5-0D948EB2080F}"
@@ -18,5 +21,8 @@ Global
 		{3C1A9CF7-152D-4DFD-82C5-0D948EB2080F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C1A9CF7-152D-4DFD-82C5-0D948EB2080F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3C1A9CF7-152D-4DFD-82C5-0D948EB2080F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

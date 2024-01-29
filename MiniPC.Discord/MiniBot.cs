@@ -14,6 +14,8 @@ using MiniPC.Discord.Managers;
 using MiniPC.Discord.Commands;
 
 using Log = Serilog.Log;
+using DSharpPlus.Interactivity.Extensions;
+
 
 namespace MiniPC.Discord
 {
@@ -66,6 +68,8 @@ namespace MiniPC.Discord
             Commands.RegisterCommands<MisticCommands>();
             
             _slashCommands = Client.UseSlashCommands();
+
+            var Interactivity = Client.UseInteractivity(new DSharpPlus.Interactivity.InteractivityConfiguration());
         }
         
         public async Task MainAsync()

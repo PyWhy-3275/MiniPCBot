@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using DSharpPlus.Entities;
+using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
+using System.Collections.Generic;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Interactivity.Extensions;
-using System.Text;
-using System.Threading.Tasks;
-using DSharpPlus.Entities;
+
 using MiniPC.Discord.Classes;
 
 namespace MiniPC.Discord.Commands
@@ -123,18 +123,19 @@ namespace MiniPC.Discord.Commands
 
         private async Task PlayerTurn(CommandContext ctx, ulong playerId)
         {
-          // Send a message indicating the player's turn
-          await ctx.RespondAsync($"{ctx.Client.GetUserAsync(playerId).Result.Username}, ваш ход. Взять еще карту? (Да/Нет)");
+            // Send a message indicating the player's turn
+            await ctx.RespondAsync($"{ctx.Client.GetUserAsync(playerId).Result.Username}, ваш ход. Взять еще карту? (Да/Нет)");
 
-          var interactivity = ctx.Client.GetInteractivity();
-          var response = await interactivity.WaitForMessageAsync(
-            x => x.Author.Id == playerId && (x.Content.ToLower() == "да" || x.Content.ToLower() == "нет"),
-            TimeSpan.FromMinutes(1)); // Set a timeout for the response
-          //if (response == null)
-         // {
-        //await ctx.RespondAsync($"Время ожидания ответа истекло. Игра прервана.");
-       // return;
-        //  }
+            var interactivity = ctx.Client.GetInteractivity();
+            var response = await interactivity.WaitForMessageAsync(
+                x => x.Author.Id == playerId && (x.Content.ToLower() == "да" || x.Content.ToLower() == "нет"),
+                TimeSpan.FromMinutes(1)); // Set a timeout for the response
+
+            //if (response == null)
+            //{
+              //  await ctx.RespondAsync($"Время ожидания ответа истекло. Игра прервана.");
+              //  return;
+           // }
 
             string answer = response.Result.Content.ToLower();
 
@@ -144,17 +145,15 @@ namespace MiniPC.Discord.Commands
                 playerHands[playerId].Add(GetRandomCard());
                 await ctx.RespondAsync($"{ctx.Client.GetUserAsync(playerId).Result.Username}, вы взяли карту. Текущие карты: {GetHandAsString(playerHands[playerId])}");
 
-                // Check if the player busted (total points over 21)
                 if (GetHandTotal(playerHands[playerId]) > 21)
                 {
                     await ctx.RespondAsync($"{ctx.Client.GetUserAsync(playerId).Result.Username}, перебор! Вы проиграли.");
                     // You may want to end the game here or handle the situation accordingly
+                   // await DetermineWinner(ctx,  player1Id,  player2Id);
+                    return;
                 }
-                else
-                {
-                    // Continue the game with the next player's turn
-                    await PlayerTurn(ctx, playerId);
-                }
+                // Continue the game with the next player's turn
+                await PlayerTurn(ctx, playerId);
             }
             else if (answer == "нет")
             {
@@ -243,6 +242,7 @@ namespace MiniPC.Discord.Commands
           // Converts a list of card values to a string
           return string.Join(", ", hand);
         }
+
         private readonly List<string> roles = new List<string>
         {
             "Мафия", "Мирный житель", "Доктор", "Детектив"

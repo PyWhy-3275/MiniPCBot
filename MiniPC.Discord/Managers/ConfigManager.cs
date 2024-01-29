@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using Newtonsoft.Json;
+using System.Threading;
+using System.Diagnostics;
 
 using Log = Serilog.Log;
 
@@ -17,6 +17,7 @@ namespace MiniPC.Discord.Managers
         private static BotConfig Config { get; }
         
         public static string Token => Config.Token;
+        public static string TokenTenor => Config.TokenTenor;
         public static string Prefix => Config.Prefix ?? "!";
 
         public static string Activity => Config.Activity;
@@ -86,6 +87,8 @@ namespace MiniPC.Discord.Managers
     {
         [JsonProperty("Token")]
         public string Token; // Token-Here
+        [JsonProperty("TokenTenor")]
+        public string TokenTenor;
         [JsonProperty("Prefix")]
         public string Prefix;
         [JsonProperty("Dms")]

@@ -1,16 +1,61 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
+using DSharpPlus.Entities;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
+using System.Collections.Generic;
 using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
+using System.Linq;
+using System.IO;
 
 namespace MiniPC.Discord.Commands;
 
+public class RussianRouletteGame
+{
+    private readonly DiscordChannel _channel;
+    private readonly DiscordUser _player1;
+    private readonly DiscordUser _player2;
+
+    public RussianRouletteGame(DiscordChannel channel, DiscordUser player1, DiscordUser player2)
+    {
+        _channel = channel;
+        _player1 = player1;
+        _player2 = player2;
+    }
+
+    public async Task StartGameAsync()
+    {
+        Random random = new Random();
+
+        // Выбираем случайно одного из игроков, который будет стрелять
+        DiscordUser shooter = random.Next(2) == 0 ? _player1 : _player2;
+
+        // Отправляем сообщение об этом игроке
+        await _channel.SendMessageAsync($"{shooter.Username} стреляет!");
+
+        // Имитируем задержку перед окончанием игры
+        await Task.Delay(2000);
+
+        // Если выстреленный игрок равен стрельцу, то он умирает
+        if (_player1 == shooter || _player2 == shooter)
+        {
+            await _channel.SendMessageAsync($"{shooter.Username} умер!");
+        }
+        else
+        {
+            await _channel.SendMessageAsync($"{shooter.Username} выжил!");
+        }
+    }
+}
+
 public class TestCommands : BaseCommandModule
 {
+    public TestCommands() 
+    {
+        
+    }
+
     private static readonly string OriginalAnimeName = "test"; // Название аниме (заглушка)
 
     [Command("guessanime")]
@@ -210,5 +255,99 @@ public class TestCommands : BaseCommandModule
         {
             await ctx.RespondAsync($"Ролевой процесс с ID {processId} не найден.");
         }
+    }
+
+    [Command("roulette")]
+    public async Task Roulette(CommandContext ctx, DiscordUser opponent)
+    {
+        if (opponent == ctx.User)
+        {
+            await ctx.RespondAsync("Вы не можете играть с самим собой!");
+            return;
+        }
+
+        var interactivity = ctx.Client.GetInteractivity();
+        var message = await ctx.RespondAsync($"Вы хотите выстрелить в {opponent.Username}? (Да/Нет)");
+
+        var response = await interactivity.WaitForMessageAsync(x => x.Channel == ctx.Channel && x.Author == ctx.User);
+        if (response.Result.Content.Equals("Да", StringComparison.OrdinalIgnoreCase))
+        {
+            var game = new RussianRouletteGame(ctx.Channel, ctx.User, opponent);
+            await game.StartGameAsync();
+        }
+        else
+        {
+            await ctx.RespondAsync("Вы отказались от стрельбы.");
+        }
+
+        await message.DeleteAsync();
+        await response.Result.DeleteAsync();
+    }
+    private List<string> players = new List<string>(); // Список участников игры
+
+    [Command("присоединиться")]
+    public async Task JoinMafia(CommandContext ctx)
+    {
+        // Проверяем, что игра еще не начата
+        if (players.Count != 0)
+        {
+            await ctx.Channel.SendMessageAsync("Игра уже началась!");
+            return;
+        }
+
+        // Проверяем, что игрок еще не в списке участников
+        if (players.Contains(ctx.User.Username))
+        {
+            await ctx.Channel.SendMessageAsync("Ты уже в списке участников!");
+            return;
+        }
+
+        // Добавляем игрока в список участников
+        players.Add(ctx.User.Username);
+        await ctx.Channel.SendMessageAsync($"{ctx.User.Mention} присоединился(ась) к игре!");
+
+        // Если достаточно игроков, запускаем игру
+        if (players.Count >= 3)
+        {
+            await StartMafia(ctx);
+        }
+    }
+
+    [Command("стартмафия")]
+    public async Task StartMafia(CommandContext ctx)
+    {
+        // Проверяем, что игра не начата еще
+        if (players.Count == 0)
+        {
+            await ctx.Channel.SendMessageAsync("Подождите, еще нет достаточного количества игроков!");
+            return;
+        }
+
+        // Проверяем, что игра не начата уже
+        if (players.Count >= 3)
+        {
+            await ctx.Channel.SendMessageAsync("Игра уже началась!");
+            return;
+        }
+
+        // Получаем список упоминаний игроков
+        List<string> playerMentions = players.Select(x => ctx.Member.Mention).ToList();
+
+        // Создаем новый список упоминаний с одним мафиози и одним доктором
+        List<string> roles = new List<string> { "Мафиози", "Доктор" };
+        roles.AddRange(Enumerable.Repeat("Мирный житель", players.Count - 2));
+
+        // Отправляем всем сообщение с ролями
+        for (int i = 0; i < players.Count; i++)
+        {
+            int index = new System.Random().Next(0, roles.Count);
+            string role = roles[index];
+            roles.RemoveAt(index);
+            await ctx.Member.SendMessageAsync($"Вы - {role}!");
+        }
+
+        players.Clear(); // Очищаем список участников
+
+        await ctx.Channel.SendMessageAsync(string.Join(", ", playerMentions) + ", игра началась!");
     }
 }

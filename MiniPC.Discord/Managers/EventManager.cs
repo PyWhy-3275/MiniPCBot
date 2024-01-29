@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using DSharpPlus;
+using System.Threading.Tasks;
 
 using Log = Serilog.Log;
 
@@ -15,13 +16,13 @@ public static class EventManager
         return Task.CompletedTask;
     }
 
-    private async Task OnReady(DiscordClient sender, ReadyEventArgs e)
+    private static Task OnReady(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs e)
     {
         Log.Information($"Bot {sender.CurrentUser.Username} is connected and ready!");
         return Task.CompletedTask;
     }
     
-    private static Task OnMessageCreated(DiscordClient sender, MessageCreateEventArgs e)
+    private static Task OnMessageCreated(DiscordClient sender, DSharpPlus.EventArgs.MessageCreateEventArgs e)
     {
         if (e.Author == null || e.Author.IsBot)
             return Task.CompletedTask;

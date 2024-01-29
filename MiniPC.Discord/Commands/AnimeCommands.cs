@@ -1,20 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
+using DSharpPlus;
 using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
-using DSharpPlus;
-using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
-using DSharpPlus.Interactivity.Extensions;
-using MiniPC.Discord.Classes;
 using Newtonsoft.Json;
+using DSharpPlus.Entities;
+using System.Threading.Tasks;
+using MiniPC.Discord.Classes;
+using DSharpPlus.CommandsNext;
+using System.Collections.Generic;
+using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.Interactivity.Extensions;
+using MiniPC.Discord.Managers;
+using Newtonsoft.Json.Linq;
 
 namespace MiniPC.Discord.Commands;
 
+
+
 public class AnimeCommands : BaseCommandModule
 {
+    private readonly HttpClient _httpClient;
+    private readonly string _tenorApiKey = ConfigManager.TokenTenor;
+
+    public AnimeCommands()
+    {
+        _httpClient = new HttpClient();
+    }
+
     [Command("animecalendar")]
     [HelpCategory("Anime")]
     public async Task AnimeCalendar(CommandContext ctx)
@@ -69,13 +81,48 @@ public class AnimeCommands : BaseCommandModule
             await ctx.RespondAsync("Неверно выбран день недели");
         }
     }
-    
+
     [Command("randomanime")]
     [HelpCategory("Anime")]
     public async Task RandomAnime(CommandContext ctx)
     {
         var embed = GetRandomAnime();
         await ctx.RespondAsync(embed: embed);
+    }
+
+    [Command("gif")]
+    [Description("Отправляет случайный gif по запросу с использованием Tenor API.")]
+    public async Task Gif(CommandContext ctx, [RemainingText]string query)
+    {
+        var url = $"https://tenor.googleapis.com/v2/search?q={Uri.EscapeDataString(query)}&key={_tenorApiKey}&client_key=my_test_client_key&limit=8";
+        var response = await _httpClient.GetStringAsync(url);
+        var json = JObject.Parse(response);
+        var results = json["results"] as JArray;
+        if (results != null && results.Count > 0)
+        {
+            // Получаем рандомный результат
+            var gifResult = results[new Random().Next(results.Count)];
+
+            // Парсим информацию о GIF и теги
+            var gifUrl = gifResult["media_formats"]["gif"]["url"].ToString();
+            var tags = string.Join(", ", gifResult["tags"].Select(t => t.ToString()));
+
+            // Создаем embed сообщение
+            var embed = new DiscordEmbedBuilder
+            {
+                Title = query,
+                ImageUrl = gifUrl,
+                Description = $"{tags}"
+            };
+
+            // Отправляем сообщение
+            await ctx.RespondAsync(embed: embed);
+        }
+        else
+        {
+            // Если результаты поиска отсутствуют
+            await ctx.RespondAsync("GIF по запросу не найден!");
+        }
     }
     
     private DiscordEmbed GetRandomAnime()

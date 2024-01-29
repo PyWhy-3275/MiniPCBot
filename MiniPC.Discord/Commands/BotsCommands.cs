@@ -1,39 +1,34 @@
-﻿using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
+using DSharpPlus.Entities;
 using System.Threading.Tasks;
 using MiniPC.Discord.Classes;
+using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext.Attributes;
 
 namespace MiniPC.Discord.Commands
 {
    public class BotCommands : BaseCommandModule
    {
-       //[Command("online")]
-       // [Description("Показывает количество пользователей онлайн и их никнеймы.")]
-       //public async Task OnlineMembers(CommandContext ctx)
-       // {
-       // Get the list of members who are online
-       //var onlineMembers = ctx.Guild.Members.Where(member => member.Presence?.Status == UserStatus.Online);
+        [Command("online")]
+        [Description("Показывает список пользователей, которые в данный момент находятся в сети на сервере.")]
+        public async Task OnlineMembers(CommandContext ctx)
+        {
+            //Get the list of human members who are online
+            var onlineMembers = ctx.Guild.Members.Values.Where(member => !member.IsBot && member.Presence?.Status == UserStatus.Online);
+            // Build the message with online human members' usernames
+            string message = "Пользователи, находящиеся в данный момент в сети на сервере:\n";
+            // Append the usernames of online human members to the message
+            foreach (var member in onlineMembers)
+            {
+                
+                message += $"{member.Guild.Name}/{member.Nickname ?? member.Username}\n"; // Use the nickname if available, or the username if not
+            }
 
-       // Get the count of online members
-       //int onlineCount = onlineMembers.Count();
+            // Send the message with online human members' usernames
+            await ctx.RespondAsync(message);
+        }
 
-       // Build the message with online members' nicknames
-       //string message = $"Количество пользователей онлайн: {onlineCount}\n";
-
-       // Append the nicknames of online members to the message
-       // foreach (var member in onlineMembers)
-       //{
-       // Check if the member has a nickname set, otherwise use their username
-       //  string nickname = !string.IsNullOrEmpty(member.Nickname) ? member.Nickname : member.Username;
-       //  message += $"{nickname}\n";
-       // }
-
-       // Send the message with online members' information
-       // await ctx.RespondAsync(message);
-       //}
        [Command("profile")]
        [HelpCategory("Bot")]
        [Description("Показывает профиль пользователя.")]

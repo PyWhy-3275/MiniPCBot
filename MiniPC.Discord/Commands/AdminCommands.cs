@@ -1,9 +1,10 @@
 ﻿using System;
+using DSharpPlus;
 using System.Linq;
 using System.Threading.Tasks;
-using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+
 using MiniPC.Discord.Classes;
 
 using Log = Serilog.Log;

@@ -1,10 +1,11 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using DSharpPlus;
+﻿using DSharpPlus;
+using System.Linq;
+using DSharpPlus.Lavalink;
 using DSharpPlus.Entities;
+using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Lavalink;
+
 using MiniPC.Discord.Classes;
 
 namespace MiniPC.Discord.Commands
