@@ -18,6 +18,7 @@ public static class EventManager
     private async Task OnReady(DiscordClient sender, ReadyEventArgs e)
     {
         Log.Information($"Bot {sender.CurrentUser.Username} is connected and ready!");
+        return Task.CompletedTask;
     }
     
     private static Task OnMessageCreated(DiscordClient sender, MessageCreateEventArgs e)
